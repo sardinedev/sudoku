@@ -6,11 +6,19 @@ function buildGrid(gridSize: number) {
   let index = 1;
   for (let row = 1; row <= gridSize; row++) {
 	for (let col = 1; col <= gridSize; col++) {
-	  grid.push(`<div onClick='selectCell(event)' class='cell' data-index=${index} data-row='${row}' data-col='${col}'></div>`);
+	  grid.push(`<div onClick='selectCell(event)' class='cell' data-index=${index} data-row=${row} data-col=${col}></div>`);
 	  index++;
 	}
   }
   return grid;
+}
+
+function buildSelector() {
+  const selector = [];
+	for (let index = 1; index <= gridSize; index++) {
+	  selector.push(`<div onClick='selectNumber(event)' class='selector' data-index=${index}>${index}</div>`);
+	}
+  return selector;
 }
 ---
 <html lang="en">
@@ -23,16 +31,27 @@ function buildGrid(gridSize: number) {
 		</style>
 	</head>
 	<body>
-		<h1>Sudoku</h1>
-		<main>
-			<div class="board" data-grid={gridSize}>
-			{buildGrid(gridSize).map((cell) => cell)}
-			</div>
-		</main>
+		<h1>Sudoku!</h1>
+		<section class="container">
+			<main>
+				<div class="board" data-grid={gridSize}>
+					{buildGrid(gridSize).map((cell) => cell)}
+				</div>
+			</main>
+			<side>
+				<div class="numbers">
+					{buildSelector().map((cell) => cell)}
+				</div>
+			</side>
+		</section>
+
 	</body>
 </html>
 
 <script>
+/**
+ * The `feed` is an array of arrays, where each array is a row in the board
+ */
 const feed = [
   [0, 0, 0, 4, 9, 1, 5, 0, 3],
   [8, 1, 9, 0, 2, 0, 0, 0, 0],
@@ -44,6 +63,37 @@ const feed = [
   [0, 9, 8, 5, 0, 0, 0, 0, 0],
   [0, 5, 0, 9, 0, 0, 4, 6, 0]
 ];
+
+let selectedNumber = null;
+
+function verifyBoard(row, col, number) {
+	let valid = true;
+
+
+console.log(row, col, number);
+	/**
+	 * Verify row
+	 * Uses the board row number to map to the `feed` row array
+	 * and checks if the number already exists
+	 */
+	if (feed[row].includes(number)) {
+		valid = false;
+	}
+
+	/**
+	 * Verify column
+	 * Since we now the column we can look every row in a fixed position
+	 * to check if the number exists.
+	 */
+	for (const row of feed) {
+		if (row[col] === number) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 function generator(grideSide) {
 	const board = [];
 	for (let index = 0; index < grideSide * grideSide ; index++) {
@@ -56,11 +106,29 @@ function generator(grideSide) {
 function selectCell(event) {
 	const cell = event.target;
 	const cellIndex = cell.dataset.index;
+	const cellRow = parseInt(cell.dataset.row) - 1;
+	const cellCol = parseInt(cell.dataset.col) - 1;
 	const prevSelectedCell = document.querySelector('.selected');
 	if (prevSelectedCell) {
 		prevSelectedCell.classList.remove('selected');
 	}
 	cell.classList.toggle('selected');
+	if (selectedNumber && cell.innerHTML === '') {
+		cell.innerText = selectedNumber;
+		const isCellValid = verifyBoard(cellRow, cellCol, selectedNumber);
+		console.log(isCellValid);
+		// feed[cellRow][cellCol] = selectedNumber;
+
+		if (!isCellValid) {
+			cell.classList.add('invalid');
+		}
+	}
+
+}
+
+function selectNumber(event) {
+	const number = event.target;
+	selectedNumber = parseInt(number.dataset.index);
 }
 
 function fillBoard() {
@@ -68,7 +136,7 @@ function fillBoard() {
 	const cells = board.querySelectorAll('.cell');
 	const flatfeed = feed.flat();
 	for (const cell of cells) {
-		const cellIndex = cell.dataset.index;
+		const cellIndex = parseInt(cell.dataset.index) - 1;
 		const cellValue = flatfeed[cellIndex];
 		if (cellValue) {
 			cell.innerText = cellValue;
