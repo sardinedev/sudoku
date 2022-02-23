@@ -1,0 +1,81 @@
+---
+const gridSize = 9;
+
+function buildGrid(gridSize: number) {
+  const grid = [];
+  let index = 1;
+  for (let row = 1; row <= gridSize; row++) {
+	for (let col = 1; col <= gridSize; col++) {
+	  grid.push(`<div onClick='selectCell(event)' class='cell' data-index=${index} data-row='${row}' data-col='${col}'></div>`);
+	  index++;
+	}
+  }
+  return grid;
+}
+---
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Sudoku</title>
+		<style global>
+		@import "../styles/styles.css";
+		</style>
+	</head>
+	<body>
+		<h1>Sudoku</h1>
+		<main>
+			<div class="board" data-grid={gridSize}>
+			{buildGrid(gridSize).map((cell) => cell)}
+			</div>
+		</main>
+	</body>
+</html>
+
+<script>
+const feed = [
+  [0, 0, 0, 4, 9, 1, 5, 0, 3],
+  [8, 1, 9, 0, 2, 0, 0, 0, 0],
+  [3, 0, 5, 0, 0, 8, 0, 9, 1],
+  [9, 0, 4, 0, 0, 0, 1, 0, 6],
+  [0, 0, 0, 6, 4, 9, 3, 0, 0],
+  [0, 7, 2, 1, 0, 3, 8, 4, 0],
+  [0, 0, 7, 0, 1, 0, 0, 3, 0],
+  [0, 9, 8, 5, 0, 0, 0, 0, 0],
+  [0, 5, 0, 9, 0, 0, 4, 6, 0]
+];
+function generator(grideSide) {
+	const board = [];
+	for (let index = 0; index < grideSide * grideSide ; index++) {
+		const element = array[index];
+		
+	}
+
+}
+
+function selectCell(event) {
+	const cell = event.target;
+	const cellIndex = cell.dataset.index;
+	const prevSelectedCell = document.querySelector('.selected');
+	if (prevSelectedCell) {
+		prevSelectedCell.classList.remove('selected');
+	}
+	cell.classList.toggle('selected');
+}
+
+function fillBoard() {
+	const board = document.querySelector('.board');
+	const cells = board.querySelectorAll('.cell');
+	const flatfeed = feed.flat();
+	for (const cell of cells) {
+		const cellIndex = cell.dataset.index;
+		const cellValue = flatfeed[cellIndex];
+		if (cellValue) {
+			cell.innerText = cellValue;
+		}
+	}
+}
+
+fillBoard();
+
+</script>
