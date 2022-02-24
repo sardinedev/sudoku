@@ -89,6 +89,24 @@ function verifyBoard(row, col, number) {
 		}
 	}
 
+	const rowOffset = row + 1;
+	const colOffset = col + 1;
+
+	const maxRow = Math.max(3, Math.min(9, Math.ceil(rowOffset/3) * 3));
+	const minRow = Math.max(0, maxRow - 3);
+
+	const maxCol = Math.max(3, Math.min(9, Math.ceil(colOffset/3) * 3));
+	const minCol = Math.max(0, maxCol - 3);
+
+	for (let rowIndex = minRow; rowIndex < maxRow; rowIndex++) {
+		for (let colIndex = minCol; colIndex < maxCol; colIndex++) {
+			const element = feed[rowIndex][colIndex];
+			if (element === number) {
+				valid = false;
+			}
+		}
+	}
+
 	return valid;
 }
 
@@ -96,7 +114,6 @@ function generator(grideSide) {
 	const board = [];
 	for (let index = 0; index < grideSide * grideSide ; index++) {
 		const element = array[index];
-		
 	}
 
 }
