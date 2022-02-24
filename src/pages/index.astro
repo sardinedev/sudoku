@@ -35,12 +35,12 @@ function buildSelector() {
 		<section class="container">
 			<main>
 				<div class="board" data-grid={gridSize}>
-					{buildGrid(gridSize).map((cell) => cell)}
+					{buildGrid(gridSize).map((cell) => <Fragment set:html={cell} />)}
 				</div>
 			</main>
 			<side>
 				<div class="numbers">
-					{buildSelector().map((cell) => cell)}
+					{buildSelector().map((cell) => <Fragment set:html={cell} />)}
 				</div>
 			</side>
 		</section>
@@ -69,8 +69,6 @@ let selectedNumber = null;
 function verifyBoard(row, col, number) {
 	let valid = true;
 
-
-console.log(row, col, number);
 	/**
 	 * Verify row
 	 * Uses the board row number to map to the `feed` row array
@@ -104,31 +102,38 @@ function generator(grideSide) {
 }
 
 function selectCell(event) {
-	const cell = event.target;
-	const cellIndex = cell.dataset.index;
-	const cellRow = parseInt(cell.dataset.row) - 1;
-	const cellCol = parseInt(cell.dataset.col) - 1;
-	const prevSelectedCell = document.querySelector('.selected');
-	if (prevSelectedCell) {
-		prevSelectedCell.classList.remove('selected');
-	}
-	cell.classList.toggle('selected');
-	if (selectedNumber && cell.innerHTML === '') {
-		cell.innerText = selectedNumber;
-		const isCellValid = verifyBoard(cellRow, cellCol, selectedNumber);
-		console.log(isCellValid);
-		// feed[cellRow][cellCol] = selectedNumber;
+	const cellElement = event.target;
+	if (!cellElement.classList.contains('prefilled')) {
+		const cellIndex = cellElement.dataset.index;
+		const cellRow = parseInt(cellElement.dataset.row) - 1;
+		const cellCol = parseInt(cellElement.dataset.col) - 1;
+		const prevSelectedCell = document.querySelector('.cell.selected');
+		if (prevSelectedCell) {
+			prevSelectedCell.classList.remove('selected');
+		}
+		cellElement.classList.toggle('selected');
+		if (selectedNumber && cellElement.innerHTML === '') {
+			cellElement.innerText = selectedNumber;
+			const isCellValid = verifyBoard(cellRow, cellCol, selectedNumber);
+			feed[cellRow][cellCol] = selectedNumber;
 
-		if (!isCellValid) {
-			cell.classList.add('invalid');
+			if (!isCellValid) {
+				cellElement.classList.add('invalid');
+			}
 		}
 	}
+
 
 }
 
 function selectNumber(event) {
-	const number = event.target;
-	selectedNumber = parseInt(number.dataset.index);
+	const numberElment = event.target;
+	selectedNumber = parseInt(numberElment.dataset.index);
+	const prevSelectedNumber = document.querySelector('.selector.selected');
+	if (prevSelectedNumber) {
+		prevSelectedNumber.classList.remove('selected');
+	}
+	numberElment.classList.toggle('selected')
 }
 
 function fillBoard() {
@@ -140,6 +145,8 @@ function fillBoard() {
 		const cellValue = flatfeed[cellIndex];
 		if (cellValue) {
 			cell.innerText = cellValue;
+			cell.classList.add('prefilled');
+
 		}
 	}
 }

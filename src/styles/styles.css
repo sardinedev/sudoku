@@ -1,63 +1,78 @@
 body {
-    margin: 0;
-    min-height: 100vh;
-    box-sizing: border-box;
+  margin: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 1200px;
 }
 
 .invalid {
-    color: red;
+  color: red;
+}
+
+.prefilled {
+  background-color: lightgray;
 }
 
 .board {
-    background-color: lightgray;
-    display: grid;
-    grid-template-columns: repeat(9, 80px);
-    border: 4px solid black;
-    width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(9, 80px);
+  border: 4px solid black;
+  width: fit-content;
 }
 
 .numbers {
-    display: grid;
-    grid-template-columns: repeat(3, 80px);
-    border: 4px solid black;
-    width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  border: 4px solid black;
+  width: fit-content;
 }
 
-.cell, .selector {
-    align-items: center;
-    border-bottom: 2px solid darkgray;
-    border-right: 2px solid darkgray;
-    box-sizing: border-box;
-    display: flex;
-    font-size: 2rem;
-    height: 80px;
-    justify-content: center;
-    width: 80px;
+.cell,
+.selector {
+  align-items: center;
+  border-bottom: 2px solid darkgray;
+  border-right: 2px solid darkgray;
+  box-sizing: border-box;
+  display: flex;
+  font-size: 2rem;
+  height: 80px;
+  justify-content: center;
+  width: 80px;
 }
 
-.cell.selected {
-    background-color: yellowgreen;
+.cell.selected,
+.selector.selected {
+  background-color: yellowgreen;
 }
 
 .cell:nth-child(9n) {
-    border-right: none;
+  border-right: none;
 }
 
 .cell[data-row="9"] {
+  border-bottom: none;
+}
+
+.cell[data-col="3"],
+.cell[data-col="6"] {
+  border-right: 2px solid black;
+}
+
+.cell[data-row="3"],
+.cell[data-row="6"] {
+  border-bottom: 2px solid black;
+}
+
+.selector:nth-child(3n) {
+  border-right: none;
+}
+
+.selector:nth-child(n+7) {
     border-bottom: none;
-}
-
-.cell[data-col="3"], .cell[data-col="6"]{
-    border-right: 2px solid black;
-}
-
-.cell[data-row="3"], .cell[data-row="6"]{
-    border-bottom: 2px solid black;
-}
+  }
